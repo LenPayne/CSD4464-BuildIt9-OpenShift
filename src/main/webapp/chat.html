@@ -33,6 +33,10 @@ limitations under the License.
                                     ' <span class="nickname">&lt;' + json[i].nickname + '&gt;</span>: ' + json[i].message + '</p>');
                     }
                 };
+                
+                websocket.onerror = function(evt) {
+                    console.log(evt.data);                    
+                };
 
                 function sendMessage() {
                     var data = {
