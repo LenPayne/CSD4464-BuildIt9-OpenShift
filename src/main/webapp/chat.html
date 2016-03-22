@@ -21,15 +21,31 @@ limitations under the License.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script>
-            var wsUri = "ws://localhost:8080/CPD4414-BuildIt9-2016W/sample";
+            var wsUri = "ws://lenchat-lenpayne.rhcloud.com/chat";
             $(document).ready(function () {
                 var websocket = new WebSocket(wsUri);
+
                 websocket.onmessage = function (evt) {
-                    $("#chatwindow").append('<p>' + evt.data + '</p>');
+                    if (typeof evt.data !== 'undefined') {
+                        var json = $.parseJSON(evt.data);
+                        for (var i = 0; i < json.length; i++)
+                            $("#chatwindow").append('<p><span class="timestamp">' + json[i].timestamp + '</span>' +
+                                    ' <span class="nickname">&lt;' + json[i].nickname + '&gt;</span>: ' + json[i].message + '</p>');
+                    }
                 };
 
                 function sendMessage() {
-                    websocket.send($('#input').val());
+                    var data = {
+                        "message": $('#input').val(),
+                        "nickname": $('#nickname').val(),
+                        "timestamp": new Date().toISOString()
+                    };
+                    var json = JSON.stringify(data);
+                    if (websocket.readyState !== 1) {
+                        $('#chatwindow').html('');
+                        websocket = new WebSocket(wsUri);
+                    }
+                    websocket.send(json);
                     $('#input').val('');
                 }
 
@@ -46,8 +62,8 @@ limitations under the License.
         </script>
     </head>
     <body>
+        <p>Nickname: <input id="nickname" /></p>
         <div id="chatwindow"></div>
         <p><input id="input" /><button id="send">Send</button></p>
-        <p><a href="chat.html">See a Full-Featured Chat</a></p>
     </body>
 </html>
