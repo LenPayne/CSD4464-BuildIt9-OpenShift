@@ -41,7 +41,7 @@ limitations under the License.
                         "timestamp": new Date().toISOString()
                     };
                     var json = JSON.stringify(data);
-                    if (websocket.readyState !== 1) {
+                    if (websocket.readyState !== 1 && websocket.readyState !== 0) {
                         $('#chatwindow').html('');
                         websocket = new WebSocket(wsUri);
                     }
