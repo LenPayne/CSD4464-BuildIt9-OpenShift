@@ -21,7 +21,7 @@ limitations under the License.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="http://code.jquery.com/jquery.min.js"></script>
         <script>
-            var wsUri = "ws://lenchat-lenpayne.rhcloud.com/sample";
+            var wsUri = "ws://lenchat-lenpayne.rhcloud.com:8000/lenchat/sample";
             $(document).ready(function () {
                 var websocket = new WebSocket(wsUri);
                 websocket.onmessage = function (evt) {
