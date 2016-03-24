@@ -1,3 +1,3 @@
-The OpenShift `jbossas` cartridge documentation can be found at:
+# WebSocket Example with Java EE and jQuery on OpenShift/WildFly10
 
-https://github.com/openshift/origin-server/tree/master/cartridges/openshift-origin-cartridge-jbossas/README.md
+Attached is a pair of WebSocket examples that build a semi-featured chat program
