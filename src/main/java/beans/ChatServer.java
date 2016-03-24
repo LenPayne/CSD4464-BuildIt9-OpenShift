@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.ManagedBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
@@ -34,6 +35,7 @@ import javax.websocket.server.ServerEndpoint;
  * @author Len Payne <len.payne@lambtoncollege.ca>
  */
 @ApplicationScoped
+@ManagedBean
 @ServerEndpoint("/chat")
 public class ChatServer {
 
