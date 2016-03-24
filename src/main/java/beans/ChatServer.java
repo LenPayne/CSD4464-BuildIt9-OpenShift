@@ -17,12 +17,10 @@ package beans;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.ManagedBean;
-import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -34,22 +32,26 @@ import javax.websocket.server.ServerEndpoint;
  *
  * @author Len Payne <len.payne@lambtoncollege.ca>
  */
-@ApplicationScoped
-@ManagedBean
 @ServerEndpoint("/chat")
 public class ChatServer {
 
-    List<Session> people = new ArrayList<>();
-    List<JsonObject> messages = new ArrayList<>();
+    // Injects the @ApplicationScoped controller into all server instances
+    @Inject
+    private ChatController chatCtrl;
 
     @OnMessage
     public void onMessage(String str, Session session) throws IOException {
-        if (!people.contains(session)) {
-            people.add(session);
+        // Adds new sessions to the controller/chat-room
+        if (!chatCtrl.containsSession(session)) {
+            chatCtrl.addSession(session);
         }
+
+        // Parses the incoming JSON and adds it to the controller/chat-room
         JsonObject json = Json.createReader(new StringReader(str)).readObject();
-        messages.add(json);
-        for (Session s : people) {
+        chatCtrl.addMessage(json);
+
+        // Connects to all sessions and sends them the latest message
+        for (Session s : chatCtrl.getSessions()) {
             RemoteEndpoint.Basic basic = s.getBasicRemote();
             String output = Json.createArrayBuilder().add(json).build().toString();
             basic.sendText(output);
@@ -58,15 +60,22 @@ public class ChatServer {
 
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        if (!people.contains(session)) {
-            people.add(session);
+        // Adds new sessions to the controller/chat-room
+        if (!chatCtrl.containsSession(session)) {
+            chatCtrl.addSession(session);
         }
+
+        // Builds a JSON Array containing all registered messages
         JsonArrayBuilder arr = Json.createArrayBuilder();
-        for (JsonObject json : messages) {
+        for (JsonObject json : chatCtrl.getMessages()) {
             arr.add(json);
         }
+        JsonArray output = arr.build();
+
+        // Sends the JSON Array out as a message history
         RemoteEndpoint.Basic basic = session.getBasicRemote();
-        basic.sendText(arr.build().toString());
+        System.out.println("Connected to " + session.getId() + " and sending: " + output.toString());
+        basic.sendText(output.toString());
     }
 
 }
