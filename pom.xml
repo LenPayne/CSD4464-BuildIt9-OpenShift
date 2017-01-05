@@ -3,10 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>lenchat</groupId>
-    <artifactId>lenchat</artifactId>
+    <artifactId>CSD4464-BuildIt9-OpenShift</artifactId>
     <packaging>war</packaging>
     <version>1.0</version>
-    <name>lenchat</name>
+    <name>CSD4464-BuildIt9-OpenShift</name>
   
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
